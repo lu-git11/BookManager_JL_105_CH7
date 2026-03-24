@@ -8,7 +8,7 @@
 import SwiftUI
 struct BookDetailView: View {
     
-    var book: Book
+    @Binding var book: Book
     
     var body: some View {
         Text("Details For:")
@@ -16,7 +16,7 @@ struct BookDetailView: View {
             .foregroundStyle(.secondary)
             .padding()
         VStack(spacing: 50){
-                HStack(spacing: 40){
+                HStack(spacing: 20){
                     Image(book.image)
                         .resizable()
                         .scaledToFit()
@@ -26,7 +26,7 @@ struct BookDetailView: View {
                     VStack{
                         Text(book.title)
                             .font(.largeTitle.bold())
-                        Text(book.author)
+                        Text("Author: \n\(book.author)")
                             .font(.title)
                     }
                 }//edn HStack
@@ -42,13 +42,13 @@ struct BookDetailView: View {
 } //end view
 
 #Preview("Sample Book") {
-    // Provide a sample Book so the preview can render
-    let sample = Book(
+    //Provide a sample Book so the preview can render
+   @State var sample = Book(
         title: "Sample Title",
-        author: "Sample Author",
-        summary: "This is a short summary used only for previewing the layout of BookDetailView.",
+       author: "Sample Author",
+      summary: "This is a short summary used only for previewing the layout of BookDetailView.",
         image: "lotr_fellowship"
-    )
-    BookDetailView(book: sample)
+)
+    BookDetailView(book: $sample)
 }
 

@@ -10,13 +10,13 @@ import SwiftData
 
 struct ContentView: View {
     
-    private let books = getBooks()
+    @State private var books = getBooks()
     
     var body: some View {
         NavigationStack {
-            List(books){ book in
+            List($books){ book in
                 NavigationLink(destination: BookDetailView(book: book)){
-                    BookListItem(book: book)
+                    BookListItem(book: book.wrappedValue)
                 }
             }
        }
