@@ -15,7 +15,7 @@ struct BookListItem: View {
             Image(book.image)
                 .resizable()
                 .frame(width: 50, height: 70)
-                .padding(5)
+                .padding(6)
                 .padding(.leading, 10)
                 
             VStack(spacing: 3){
