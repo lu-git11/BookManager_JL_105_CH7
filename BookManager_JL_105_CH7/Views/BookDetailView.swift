@@ -38,7 +38,7 @@ struct BookDetailView: View {
             Text(book.summary)
                 .lineSpacing(5)
             VStack(spacing: 10){
-                VStack(alignment: .center, spacing: 16){
+                VStack(spacing: 16){
                         Text("Reviews")
                             .font(.largeTitle.bold())
                         

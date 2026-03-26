@@ -25,8 +25,19 @@ struct ReviewView: View {
                         Text("Rating: \(rating)/5")
                     }
                     TextField("Review title", text:$reviewTitle)
-                    TextField("Write a review here", text:$review)
-                        .frame(height: 100)
+                        .foregroundStyle(.secondary)
+                        .opacity(1)
+                    ZStack(alignment: .topLeading){
+                        TextEditor(text:$review)
+                            .frame(height: 100)
+                        
+                        if review.isEmpty {
+                            Text("Write a review here")
+                                .foregroundStyle(.secondary)
+                                .opacity(0.5)
+                                .padding(.top, 8)
+                        }
+                    }
                 }
             }//end form
             .onAppear {
@@ -34,7 +45,7 @@ struct ReviewView: View {
                 review = book.reviewText
                 rating = book.rating ?? 0
             }
-            .navigationTitle("review")
+            .navigationTitle("Review")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar{
                 ToolbarItem(placement: .cancellationAction){
