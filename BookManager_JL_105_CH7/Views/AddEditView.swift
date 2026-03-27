@@ -17,7 +17,8 @@ struct AddEditView: View {
     @State var author: String = ""
     @State var summary: String = ""
     @State var rating: Int = 0
-    @State var review: String = ""
+    @State var reviewTitle: String = ""
+    @State var reviewText: String = ""
     
     @State var image: String = "lotr_fellowship"
     @State private var newReview: Bool = false
@@ -28,7 +29,8 @@ struct AddEditView: View {
         self._author = .init(wrappedValue:book.wrappedValue.author)
         self._summary = .init(wrappedValue:book.wrappedValue.summary)
         self._rating = .init(wrappedValue:book.wrappedValue.rating != nil ? book.wrappedValue.rating! : 0)
-        self._review = .init(wrappedValue:book.wrappedValue.reviewText)
+        self._reviewTitle = .init(wrappedValue:book.wrappedValue.reviewTitle)
+        self._reviewText = .init(wrappedValue:book.wrappedValue.reviewText)
         self._image = .init(wrappedValue:book.wrappedValue.image)
     }
     
@@ -36,52 +38,64 @@ struct AddEditView: View {
         NavigationStack{
             Form{
                 Section(header: Text("Book Detail")){
-                    TextField("Title", text: $book.title)
-                    TextField("Author", text: $book.author)
-                    TextEditor(text: $book.summary)
+                    TextField("Title", text: $title)
+                    TextField("Author", text: $author)
+                    TextEditor(text: $summary)
                         .frame(height: 150)
-                    Picker("Cover", selection: $book.image){
+                    Picker("Cover", selection: $image){
                         Text("Fellowship of the Ring").tag("lotr_fellowship")
                         Text("Two Towers").tag("lotr_towers")
                         Text("Return of the King").tag("lotr_king")
                     }
                 }
                 Section(header: Text("Review")){
-                    Picker("Rating", selection: $book.rating){
+                    Picker("Rating", selection: $rating){
                         Text("no rating selected").tag(0)
                         ForEach(1...5, id: \.self){ num in
                             Text(String(num)).tag(num)
                         }
                     }
-                }
-                .navigationBarItems(trailing: Button("Review"){
-                    newReview.toggle()
-                })
-                .sheet(isPresented: $newReview){
-                    NavigationStack {
-                        ReviewView(book: $book)
-                        Spacer()
+                    ZStack(alignment: .leading){
+                        TextEditor(text:$reviewTitle)
+                            .frame(height: 20)
+                            .padding(.top, 1)
+                        
+                        if reviewTitle.isEmpty{
+                            Text("Review Title")                     .foregroundStyle(.secondary)
+                                .opacity(0.5)
+                        }
                     }
-                    .padding()
+                            
+                    ZStack(alignment: .topLeading){
+                        TextEditor(text:$reviewText)
+                            .frame(height: 100)
+                            
+                            if reviewText.isEmpty {
+                                Text("Write a review here")
+                                    .foregroundStyle(.secondary)
+                                    .opacity(0.5)
+                                    .padding(.top, 5)
+                            }
+                        }
+                    
+                    .navigationTitle(book.title.isEmpty ? "Add Book" : "Edit Book")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar{
+                        ToolbarItem(placement: .confirmationAction){
+                            Button("Save"){
+                                book.title = title
+                                book.author = author
+                                book.summary = summary
+                                book.rating = rating
+                                book.reviewTitle = reviewTitle
+                                book.reviewText = reviewText
+                                book.image = image
+                                dismiss()
+                            }.disabled(title.isEmpty)
+                        }
+                    }
                 }
-                .navigationTitle("Review")
-                .navigationBarTitleDisplayMode(.inline)
-            }//end form
-            .navigationTitle(book.title.isEmpty ? "Add Book" : "Edit Book")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar{
-                ToolbarItem(placement: .confirmationAction){
-                    Button("Save"){
-                        book.title = title
-                        book.author = author
-                        book.summary = summary
-                        book.rating = rating
-                        book.reviewText = review
-                        book.image = image
-                        dismiss()
-                    }.disabled(title.isEmpty)
-                }
-            }
-        }
-    }
-}
+            }// end form
+        }//end Navigation Stack
+    }//end view
+}//end struct
