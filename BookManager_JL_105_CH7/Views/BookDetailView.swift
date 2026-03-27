@@ -8,8 +8,7 @@
 import SwiftUI
 struct BookDetailView: View {
     
-    @State private var newReview: Bool = false
-
+    @State private var showEdit: Bool = false
     
     @Binding var book: Book
     
@@ -68,18 +67,14 @@ struct BookDetailView: View {
             .font(.title3)
             .navigationTitle(book.title)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("Review"){
-                newReview.toggle()
+            .navigationBarItems(trailing: Button("Edit"){
+                showEdit.toggle()
             })
-            .sheet(isPresented: $newReview){
-                NavigationStack {
-                    ReviewView(book: $book)
-                    Spacer()
-                }
-                .padding()
-            }
-            .navigationTitle("Review")
-            .navigationBarTitleDisplayMode(.inline)
+            .sheet(
+                isPresented: $showEdit,
+                content: {
+                    AddEditView(book: $book)
+            })
     } //end body
 } //end view
 
