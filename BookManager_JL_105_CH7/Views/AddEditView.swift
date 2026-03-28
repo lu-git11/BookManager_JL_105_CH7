@@ -57,11 +57,12 @@ struct AddEditView: View {
                     }
                     ZStack(alignment: .leading){
                         TextEditor(text:$reviewTitle)
-                            .frame(height: 20)
+                            .frame(height: 30)
                             .padding(.top, 1)
                         
                         if reviewTitle.isEmpty{
-                            Text("Review Title")                     .foregroundStyle(.secondary)
+                            Text("Review Title")
+                                .foregroundStyle(.secondary)
                                 .opacity(0.5)
                         }
                     }

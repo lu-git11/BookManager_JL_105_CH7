@@ -18,7 +18,7 @@ struct BookDetailView: View {
             .foregroundStyle(.secondary)
             .padding()
         
-        VStack(alignment: .leading, spacing: 55){
+        VStack(alignment: .leading, spacing: 30){
             HStack(spacing: 20){
                 Image(book.image)
                     .resizable()
@@ -34,6 +34,8 @@ struct BookDetailView: View {
                         .foregroundStyle(.secondary)
                 }
             }//end HStack
+            StarView(rating: book.rating ?? 0)
+                .padding(0)
             Text(book.summary)
                 .lineSpacing(5)
             VStack(spacing: 5){
@@ -65,6 +67,7 @@ struct BookDetailView: View {
                         .font(.body)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    Spacer()
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
