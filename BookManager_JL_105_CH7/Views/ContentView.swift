@@ -11,32 +11,23 @@ import SwiftData
 struct ContentView: View {
     
     @State private var books = getBooks()
-    @State private var showAddBook: Bool = false
-    @State private var newBook = Book(title:"", author:"", summary:"", image:"lotr_fellowship")
+    
+    @Namespace private var animation
     
     var body: some View {
-        NavigationStack {
-            List($books){ book in
-                NavigationLink(destination: BookDetailView(book: book)){
-                    BookListItem(book: book.wrappedValue)
+        TabView{
+            BookListView(books: $books, animation: animation)
+                .tabItem{
+                    Label("Books", systemImage: "books.vertical.fill")
                 }
-            }
-            .navigationTitle("Book Manager")
-            .navigationBarItems(trailing: Button("Add Book"){
-                showAddBook.toggle()
-            })
-            .sheet(isPresented: $showAddBook){
-                if(!newBook.title.isEmpty){
-                    books.append(newBook)
+            Spacer()
+            FavoriteView(books: $books, animation: animation)
+                .tabItem{
+                    Label("Favorites", systemImage: "heart.fill")
                 }
-                newBook = Book(title: "", author:"", summary: "", image: "lotr_fellowship", )
-            }
-            content:{
-                    AddEditView(book: $newBook)
-            }
-       }
+        }
     }
-}
+}//end struct
 
 #Preview {
     ContentView()

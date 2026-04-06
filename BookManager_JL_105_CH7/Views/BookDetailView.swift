@@ -11,6 +11,7 @@ struct BookDetailView: View {
     @State private var showEdit: Bool = false
     
     @Binding var book: Book
+    var animation: Namespace.ID
     
     var body: some View {
         Text("Details For:")
@@ -25,6 +26,7 @@ struct BookDetailView: View {
                     .scaledToFit()
                     .frame(maxHeight: 150)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .matchedGeometryEffect(id: book.id, in: animation)
                 
                 VStack{
                     Text(book.title)
@@ -33,7 +35,11 @@ struct BookDetailView: View {
                         .font(.title2)
                         .foregroundStyle(.secondary)
                 }
+                HStack{
+                    FavToggle(isFavorite: $book.isFavorite)
+                }
             }//end HStack
+            
             Text(book.summary)
                 .lineSpacing(5)
             VStack(spacing: 10){
@@ -49,16 +55,19 @@ struct BookDetailView: View {
                                 Text(book.reviewTitle)
                                     .font(.title.bold())
                                 Spacer()
+                                
                                 if let rating = book.rating, rating > 0 {
                                     HStack(spacing: 5){
                                         Text("\(rating)")
                                         Image(systemName: "star.fill")
                                     }
                                 }
+                                
                             }
                             Text(book.reviewText)
                                 .font(.body)
                         }
+                    
                     }
                 }
             }//end Vstack
@@ -80,12 +89,13 @@ struct BookDetailView: View {
 
 #Preview("Sample Book") {
     //Provide a sample Book so the preview can render
-   @State var sample = Book(
+    @State var sample = Book(
         title: "Sample Title",
-       author: "Sample Author",
-      summary: "This is a short summary used only for previewing the layout of BookDetailView.",
+        author: "Sample Author",
+        summary: "This is a short summary used only for previewing the layout of BookDetailView.",
         image: "lotr_fellowship"
-)
-    BookDetailView(book: $sample)
+    )
+    @Namespace var animation
+    BookDetailView(book: $sample, animation: animation)
 }
 

@@ -12,12 +12,20 @@ struct BookListItem: View {
     
     var body: some View {
         HStack(spacing: 30){
-            Image(book.image)
-                .resizable()
-                .frame(width: 50, height: 70)
-                .padding(6)
-                .padding(.leading, 10)
+            ZStack{
+                Image(book.image)
+                    .resizable()
+                    .frame(width: 50, height: 70)
+                    .padding(6)
+                    .padding(.leading, 10)
                 
+                if book.isFavorite{
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(.red)
+                        .imageScale(.large)
+                        .offset(x: 30, y: 22)
+                }
+            }
             VStack(spacing: 3){
                 Text(book.title)
                     .font(.title2.bold())
@@ -25,6 +33,7 @@ struct BookListItem: View {
                     .font(.title3)
                     .foregroundStyle(.secondary)
             }
+            
        }
     }
 }
