@@ -12,6 +12,19 @@ struct ContentView: View {
     
     @State private var books = getBooks()
     
+    @AppStorage("SETTINGS_APPEARANCE_THEME_KEY") private var theme: Theme = .system
+    
+    private var currentTheme: ColorScheme? {
+        switch theme {
+            case .system:
+                return nil
+            case .light:
+                return .light
+            case .dark:
+                return .dark
+        }
+    }
+    
     @Namespace private var animation
     
     var body: some View {
@@ -25,7 +38,13 @@ struct ContentView: View {
                 .tabItem{
                     Label("Favorites", systemImage: "heart.fill")
                 }
+            Spacer()
+            SettingsView()
+                .tabItem{
+                    Label("Settings", systemImage: "gearshape")
+                }
         }
+        .preferredColorScheme(currentTheme)
     }
 }//end struct
 

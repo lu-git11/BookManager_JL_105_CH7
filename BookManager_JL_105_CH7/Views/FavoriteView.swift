@@ -14,20 +14,24 @@ struct FavoriteView: View {
     @State private var selectedBook: Book?
     @State var selectedGenre: Genre? = nil
     @State var selectedReadingStatus: ReadingStatus? = nil
+    @State var showFilter: Bool = false
+    
+    @AppStorage("SETTINGS_GRID_COLUMNS_KEY") private var gridColumns: Int = 2
     //computed property
     private var favoriteBooks: [Book]{
         filterFavoriteBooks(books: books, genre: selectedGenre, readingStatus: selectedReadingStatus)
     }
     
     private var gridLayout: [GridItem]{
-        [GridItem(.flexible()),GridItem(.flexible())]
+//        [GridItem(.flexible()),GridItem(.flexible())]
+        Array(repeating: GridItem(.flexible()), count: gridColumns)
     }
     
     var body: some View {
         NavigationStack{
             GeometryReader { geometry in
                 let columns = geometry.size.width > 400 ? 2 : 1
-                let gridLayout = Array(repeating: GridItem(.flexible(minimum: 100)), count: columns)
+
                 ScrollView{
                     if favoriteBooks.isEmpty{
                         Text("No Favorite Books").foregroundStyle(.secondary)
@@ -47,7 +51,21 @@ struct FavoriteView: View {
                     }
                 }
                 .navigationTitle("Favorite Books")
-                
+                .font(.largeTitle)
+                .navigationBarItems(trailing:
+                    Button(action: {showFilter.toggle() }) {
+                        Image(systemName: "line.horizontal.3.decrease")
+                    })
+                .navigationBarTitleDisplayMode(.inline)
+                .sheet(
+                    isPresented: $showFilter,
+                    content: {
+                        FilterView(
+                            selectedGenre: $selectedGenre,
+                            selectedReadingStatus: $selectedReadingStatus
+                        )
+                    }
+                )
             }
             
         }
