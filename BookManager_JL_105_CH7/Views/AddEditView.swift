@@ -16,8 +16,8 @@ struct AddEditView: View {
     @State var title: String = ""
     @State var author: String = ""
     @State var summary: String = ""
-    @State var rating: Int = 0
-    @State var review: String = ""
+    @State var genre: Genre = .unknown
+    @State var readingStatus: ReadingStatus = .unknown
     
     @State var image: String = "lotr_fellowship"
     @State private var newReview: Bool = false
@@ -27,8 +27,8 @@ struct AddEditView: View {
         self._title = .init(wrappedValue:book.wrappedValue.title)
         self._author = .init(wrappedValue:book.wrappedValue.author)
         self._summary = .init(wrappedValue:book.wrappedValue.summary)
-        self._rating = .init(wrappedValue:book.wrappedValue.rating != nil ? book.wrappedValue.rating! : 0)
-        self._review = .init(wrappedValue:book.wrappedValue.reviewText)
+        self._genre = .init(wrappedValue:book.wrappedValue.genre)
+        self._readingStatus = .init(wrappedValue:book.wrappedValue.readingStatus)
         self._image = .init(wrappedValue:book.wrappedValue.image)
     }
     
@@ -40,18 +40,21 @@ struct AddEditView: View {
                     TextField("Author", text: $book.author)
                     TextEditor(text: $book.summary)
                         .frame(height: 150)
+                    Picker("Genre", selection: $genre){
+                        ForEach(Genre.allCases, id:\.self){genre in
+                            Text(genre.rawValue).tag(genre)}
+                    }
                     Picker("Cover", selection: $book.image){
                         Text("Fellowship of the Ring").tag("lotr_fellowship")
                         Text("Two Towers").tag("lotr_towers")
                         Text("Return of the King").tag("lotr_king")
                     }
                 }
-                Section(header: Text("Review")){
-                    Picker("Rating", selection: $book.rating){
-                        Text("no rating selected").tag(0)
-                        ForEach(1...5, id: \.self){ num in
-                            Text(String(num)).tag(num)
-                        }
+                Section(header: Text("Status")){
+                    Picker("Reading Status", selection: $readingStatus){
+                        ForEach(ReadingStatus.allCases, id:\.self){readingStatus in
+                            Text(readingStatus.rawValue).tag(readingStatus)}
+                        .padding()
                     }
                 }
                 .navigationBarItems(trailing: Button("Review"){
@@ -64,7 +67,7 @@ struct AddEditView: View {
                     }
                     .padding()
                 }
-                .navigationTitle("Review")
+                .navigationTitle("Edit")
                 .navigationBarTitleDisplayMode(.inline)
             }//end form
             .navigationTitle(book.title.isEmpty ? "Add Book" : "Edit Book")
@@ -75,8 +78,8 @@ struct AddEditView: View {
                         book.title = title
                         book.author = author
                         book.summary = summary
-                        book.rating = rating
-                        book.reviewText = review
+                        book.genre = genre
+                        book.readingStatus = readingStatus
                         book.image = image
                         dismiss()
                     }.disabled(title.isEmpty)

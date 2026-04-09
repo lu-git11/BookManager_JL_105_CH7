@@ -12,10 +12,11 @@ struct FavoriteView: View {
     @Binding var books: [Book]
     var animation: Namespace.ID
     @State private var selectedBook: Book?
-    
+    @State var selectedGenre: Genre? = nil
+    @State var selectedReadingStatus: ReadingStatus? = nil
     //computed property
     private var favoriteBooks: [Book]{
-        filterFavoriteBooks(books: books)
+        filterFavoriteBooks(books: books, genre: selectedGenre, readingStatus: selectedReadingStatus)
     }
     
     private var gridLayout: [GridItem]{

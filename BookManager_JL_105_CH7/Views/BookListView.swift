@@ -25,6 +25,7 @@ struct BookListView: View {
             .navigationTitle("Book Manager")
             .navigationBarItems(trailing: Button("Add Book"){
                 showAddBook.toggle()
+          
             })
             .sheet(isPresented: $showAddBook){
                 if(!newBook.title.isEmpty){

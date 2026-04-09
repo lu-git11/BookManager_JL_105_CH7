@@ -14,7 +14,7 @@ struct ReviewView: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var reviewTitle: String = ""
-    @State private var review: String = ""
+    @State private var reviewText: String = ""
     @State private var rating: Int = 0
     
     var body: some View{
@@ -25,13 +25,11 @@ struct ReviewView: View {
                         Text("Rating: \(rating)/5")
                     }
                     TextField("Review title", text:$reviewTitle)
-                        .foregroundStyle(.secondary)
-                        .opacity(1)
                     ZStack(alignment: .topLeading){
-                        TextEditor(text:$review)
+                        TextEditor(text:$reviewText)
                             .frame(height: 100)
                         
-                        if review.isEmpty {
+                        if reviewText.isEmpty {
                             Text("Write a review here")
                                 .foregroundStyle(.secondary)
                                 .opacity(0.5)
@@ -42,7 +40,7 @@ struct ReviewView: View {
             }//end form
             .onAppear {
                 reviewTitle = book.reviewTitle
-                review = book.reviewText
+                reviewText = book.reviewText
                 rating = book.rating ?? 0
             }
             .navigationTitle("Review")
@@ -54,7 +52,7 @@ struct ReviewView: View {
                 ToolbarItem(placement: .confirmationAction){
                     Button("Save"){
                         book.reviewTitle = reviewTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-                        book.reviewText = review.trimmingCharacters(in: .whitespacesAndNewlines)
+                        book.reviewText = reviewText.trimmingCharacters(in: .whitespacesAndNewlines)
                         book.rating = rating
                         dismiss()
                     }

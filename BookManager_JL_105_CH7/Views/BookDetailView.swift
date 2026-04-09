@@ -25,8 +25,7 @@ struct BookDetailView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(maxHeight: 150)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                    .matchedGeometryEffect(id: book.id, in: animation)
+                    .cornerRadius(12)
                 
                 VStack{
                     Text(book.title)
@@ -34,6 +33,7 @@ struct BookDetailView: View {
                     Text("By: \(book.author)")
                         .font(.title2)
                         .foregroundStyle(.secondary)
+                    ColorCapsule(text:book.genre.rawValue)
                 }
                 HStack{
                     FavToggle(isFavorite: $book.isFavorite)
@@ -44,58 +44,63 @@ struct BookDetailView: View {
                 .lineSpacing(5)
             VStack(spacing: 10){
                 VStack(spacing: 16){
+                    HStack{
                         Text("Reviews")
                             .font(.largeTitle.bold())
-                        
-                        if book.reviewText.isEmpty{
-                            Text("No review yet")
-                                .foregroundStyle(.secondary)
-                        } else {
-                            HStack{
-                                Text(book.reviewTitle)
-                                    .font(.title.bold())
-                                Spacer()
-                                
-                                if let rating = book.rating, rating > 0 {
-                                    HStack(spacing: 5){
-                                        Text("\(rating)")
-                                        Image(systemName: "star.fill")
-                                    }
-                                }
-                                
+                        Spacer()
+                        ColorCapsule(
+                            text:book.readingStatus.rawValue,
+                            color:.orange)
+                    }
+                    if let rating = book.rating, rating > 0 {
+                        HStack(spacing: 5){
+                            ForEach(0..<5, id: \.self) { index in
+                                Image(systemName: index < rating ? "star.fill" : "star")
+                                    .foregroundStyle(.yellow)
                             }
-                            Text(book.reviewText)
-                                .font(.body)
                         }
-                    
+                    }
+                    if book.reviewText.isEmpty{
+                        Text("No review yet")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        HStack{
+                            Text(book.reviewTitle)
+                                .font(.title.bold())
+                            Spacer()
+                        }
+                        
+                        Text(book.reviewText)
+                            .font(.body)
                     }
                 }
-            }//end Vstack
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.horizontal, 30)
-            .font(.title3)
-            .navigationTitle(book.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("Edit"){
-                showEdit.toggle()
+            }
+        }//end Vstack
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 30)
+        .font(.title3)
+        .navigationTitle(book.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarItems(trailing: Button("Edit"){
+            showEdit.toggle()
+        })
+        .sheet(
+            isPresented: $showEdit,
+            content: {
+                AddEditView(book: $book)
             })
-            .sheet(
-                isPresented: $showEdit,
-                content: {
-                    AddEditView(book: $book)
-            })
-    } //end body
-} //end view
-
-#Preview("Sample Book") {
-    //Provide a sample Book so the preview can render
-    @State var sample = Book(
-        title: "Sample Title",
-        author: "Sample Author",
-        summary: "This is a short summary used only for previewing the layout of BookDetailView.",
-        image: "lotr_fellowship"
-    )
-    @Namespace var animation
-    BookDetailView(book: $sample, animation: animation)
-}
+        } //end body
+    } //end view
+    
+    #Preview("Sample Book") {
+        //Provide a sample Book so the preview can render
+        @State var sample = Book(
+            title: "Sample Title",
+            author: "Sample Author",
+            summary: "This is a short summary used only for previewing the layout of BookDetailView.",
+            image: "lotr_fellowship"
+        )
+        @Namespace var animation
+        BookDetailView(book: $sample, animation: animation)
+    }
 
